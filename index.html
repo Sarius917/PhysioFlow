@@ -1551,7 +1551,10 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
     <h1 class="view-title">Klinische Tests</h1>
     <p class="view-sub">Alle Tests mit Sensitivität und Spezifität, durchsuchbar und filterbar.</p>
     <div class="test-controls">
-      <input id="t-search" class="search-input" type="search" placeholder="Suchen: Test, Krankheitsbild, Stichwort ...">
+      <div class="kjoint-dropdown" id="tjoint-dropdown">
+        <button class="kjoint-toggle" id="tjoint-toggle" onclick="toggleTestJointDropdown()">Alle Gelenke ▾</button>
+        <div class="kjoint-list" id="tjoint-list" style="display:none"></div>
+      </div>
       <select id="t-sort" class="test-sort">
         <option value="default">Sortierung: Standard</option>
         <option value="sens-desc">Sensitivität (hoch → niedrig)</option>
@@ -1559,7 +1562,6 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
         <option value="name">Name (A-Z)</option>
       </select>
     </div>
-    <div class="chips" id="t-chips"></div>
     <div class="test-grid" id="t-grid"></div>
   </section>
 
@@ -4015,7 +4017,7 @@ document.querySelectorAll("#joint-tabs .tab2").forEach(tb => {
 });
 
 // === Tests view ===
-let tSearch = "", tSort = "default", tActiveJoints = new Set();
+let tSort = "default", tActiveJoint = null;
 function testCardHtml(t) {
   const sCls = classify(t.sens_num);
   const pCls = classify(t.spez_num);
@@ -4052,40 +4054,48 @@ function clusterCardHtml(c) {
   '</div>';
 }
 
-function renderTestChips() {
-  const wrap = document.getElementById("t-chips");
-  wrap.innerHTML = "";
-  const all = document.createElement("div");
-  all.className = "chip" + (tActiveJoints.size===0 ? " active" : "");
-  all.innerHTML = 'Alle <span class="badge">' + TESTS.length + '</span>';
-  all.onclick = () => { tActiveJoints.clear(); renderTests(); };
-  wrap.appendChild(all);
-  const allRegions = [...new Set(TESTS.map(t => t.joint))];
-  allRegions.forEach(j => {
+function renderTestJointDropdown() {
+  const list = document.getElementById("tjoint-list");
+  const toggle = document.getElementById("tjoint-toggle");
+  if (!list) return;
+  list.innerHTML = "";
+  // "Alle" option
+  const allBtn = document.createElement("button");
+  allBtn.className = "kjoint-list-item" + (tActiveJoint === null ? " active" : "");
+  allBtn.textContent = "Alle Gelenke (" + TESTS.length + ")";
+  allBtn.addEventListener("click", () => { closeTestJointDropdown(); tActiveJoint = null; renderTests(); });
+  list.appendChild(allBtn);
+  // one entry per joint
+  const joints = [...new Set(TESTS.map(t => t.joint))];
+  joints.forEach(j => {
     const n = TESTS.filter(t => t.joint === j).length;
-    const c = document.createElement("div");
-    c.className = "chip" + (tActiveJoints.has(j) ? " active" : "");
-    c.innerHTML = escapeHtml(j) + ' <span class="badge">' + n + '</span>';
-    c.onclick = () => { if (tActiveJoints.has(j)) tActiveJoints.delete(j); else tActiveJoints.add(j); renderTests(); };
-    wrap.appendChild(c);
+    const btn = document.createElement("button");
+    btn.className = "kjoint-list-item" + (tActiveJoint === j ? " active" : "");
+    btn.textContent = j + " (" + n + ")";
+    btn.addEventListener("click", () => { closeTestJointDropdown(); tActiveJoint = j; renderTests(); });
+    list.appendChild(btn);
   });
+  if (toggle) toggle.textContent = (tActiveJoint || "Alle Gelenke") + " ▾";
+}
+function toggleTestJointDropdown() {
+  const list = document.getElementById("tjoint-list");
+  if (list) list.style.display = list.style.display === "none" ? "block" : "none";
+}
+function closeTestJointDropdown() {
+  const list = document.getElementById("tjoint-list");
+  if (list) list.style.display = "none";
 }
 function renderTests() {
   let list = TESTS.filter(t => {
-    if (tActiveJoints.size > 0 && !tActiveJoints.has(t.joint)) return false;
-    if (tSearch) {
-      const blob = (t.name+" "+t.joint+" "+t.durch+" "+t.aussage+" "+t.krankheit+" "+t.anm).toLowerCase();
-      if (!blob.includes(tSearch.toLowerCase())) return false;
-    }
+    if (tActiveJoint && t.joint !== tActiveJoint) return false;
     return true;
   });
   if (tSort === "sens-desc") list.sort((a,b) => (b.sens_num??-1)-(a.sens_num??-1));
   else if (tSort === "spez-desc") list.sort((a,b) => (b.spez_num??-1)-(a.spez_num??-1));
   else if (tSort === "name") list.sort((a,b) => a.name.localeCompare(b.name,"de"));
   document.getElementById("t-grid").innerHTML = list.map(testCardHtml).join("");
-  renderTestChips();
+  renderTestJointDropdown();
 }
-document.getElementById("t-search").addEventListener("input", e => { tSearch = e.target.value; renderTests(); });
 document.getElementById("t-sort").addEventListener("change", e => { tSort = e.target.value; renderTests(); });
 
 // === Cluster view ===
