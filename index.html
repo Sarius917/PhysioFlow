@@ -184,7 +184,7 @@ nav.topnav a.active { color: var(--accent); background: rgba(37,99,235,.08); }
 
 /* === Container === */
 main.app { padding: 0; max-width: 1280px; margin: 0 auto; }
-.view { display: none; padding: 32px 32px 60px; min-height: calc(100vh - 60px); }
+.view { display: none; padding: 32px 32px 60px; min-height: calc(100vh - 60px); overflow: visible; }
 .view.active { display: block; }
 h1.view-title { font-size: 30px; font-weight: 800; margin: 0 0 6px 0; color: var(--text); letter-spacing: -.5px; }
 .view-sub { color: var(--text-mute); font-size: 15px; margin-bottom: 28px; line-height: 1.5; max-width: 80ch; }
@@ -281,7 +281,7 @@ h1.view-title { font-size: 30px; font-weight: 800; margin: 0 0 6px 0; color: var
 .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(96,165,250,.18); }
 select.test-sort { padding: 11px 14px; background: var(--card); border: 1px solid var(--border);
   border-radius: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
-.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+.chips { display: none; }
 .chip { padding: 7px 14px; border-radius: 20px; font-size: 12px; cursor: pointer;
   background: var(--card); color: var(--text-soft); border: 1px solid var(--border);
   user-select: none; font-weight: 600; transition: all .15s; }
@@ -1020,6 +1020,201 @@ button:active, .kbtn:active, .back-btn:active { transform: scale(.97); }
 .sticky-disclaimer .sd-close:hover { opacity: 1; }
 body.disclaimer-closed .sticky-disclaimer { display: none; }
 
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE  (≤ 768px)
+   ═══════════════════════════════════════════════════ */
+
+/* Bottom nav – hidden on desktop */
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  /* ── Full-height flex layout so nav is always visible ── */
+  html { height: 100%; }
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    height: 100vh; /* fallback */
+    overflow: hidden;
+  }
+  nav.topnav {
+    flex-shrink: 0;
+    position: static !important; /* override sticky */
+  }
+  main.app {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-nav {
+    flex-shrink: 0;
+  }
+
+  /* ── Top nav: show only brand + theme ── */
+  nav.topnav {
+    height: 52px;
+    padding: 0 12px;
+    gap: 0;
+  }
+  nav.topnav .nav-group,
+  nav.topnav .nav-sep,
+  nav.topnav .nav-spacer,
+  nav.topnav .search-trigger {
+    display: none !important;
+  }
+  nav.topnav .brand {
+    font-size: 16px;
+    margin-right: auto;
+    gap: 8px;
+  }
+  nav.topnav .b-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  #theme-picker {
+    margin-left: auto;
+  }
+
+  /* ── Bottom nav ── */
+  .mobile-nav {
+    display: flex;
+    position: static;
+    width: 100%;
+    height: 56px;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    z-index: 500;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 -2px 12px rgba(0,0,0,.08);
+  }
+  .mobile-nav::-webkit-scrollbar { display: none; }
+  .mobile-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    flex: 1;
+    gap: 3px;
+    color: var(--text-mute);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .2px;
+    padding: 6px 4px;
+    transition: color .15s;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+  .mobile-nav a svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .mobile-nav a.active,
+  .mobile-nav a:hover {
+    color: var(--accent);
+  }
+
+  /* ── View padding ── */
+  .view {
+    padding: 20px 16px 32px;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  /* ── Typography ── */
+  h1.view-title { font-size: 22px; }
+  h2.view-title { font-size: 19px; }
+  .view-sub { font-size: 13px; }
+
+  /* ── Grids → single column ── */
+  .path-cards,
+  .ddx-symptom-grid,
+  .ddx-hyp-grid,
+  .learn-modes,
+  .biomech-grid,
+  .joint-cards,
+  .test-grid,
+  .cluster-grid,
+  .atem-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Tables → scrollable ── */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── Joint tabs → scrollable row ── */
+  .joint-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 2px;
+  }
+  .joint-tabs::-webkit-scrollbar { display: none; }
+  .tab2 { white-space: nowrap; flex-shrink: 0; }
+
+  /* ── Cards ── */
+  .concept-card { padding: 14px 16px; }
+  .path-card { padding: 14px; }
+  .karte-wrap { max-width: 100%; padding: 0 4px; }
+
+  /* ── Flashcard ── */
+  .karte-card { padding: 20px 16px; }
+
+  /* ── Learn ── */
+  .learn-topbar { flex-wrap: wrap; gap: 8px; }
+  .learn-home { padding: 0; }
+
+  /* ── DDx ── */
+  .ddx-step-header { flex-wrap: wrap; gap: 8px; }
+
+  /* ── Tests ── */
+  .test-card { padding: 14px; }
+
+  /* ── Gait table ── */
+  .gait-joints { grid-template-columns: 1fr 1fr !important; }
+
+  /* ── Sticky disclaimer ── */
+  .sticky-disclaimer {
+    font-size: 10px;
+    padding: 6px 12px;
+    padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  }
+
+  /* ── Safe area for bottom nav ── */
+  .mobile-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(60px + env(safe-area-inset-bottom));
+  }
+
+
+  /* ── DDx: hide region tabs on mobile ── */
+  .ddx-region-tabs { display: none !important; }
+
+  footer { display: none; }
+
+  nav.topnav a[data-route="learn"] { margin-left: 12px; }
+}
 </style>
 </head>
 <body>
@@ -1283,6 +1478,11 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
   </div>
 </div>
 
+
+  <!-- Disclaimer inside scroll area -->
+  <div class="sticky-disclaimer" id="sticky-disclaimer-inner" style="margin:24px 0 0 0">
+    <span>⚠ <strong>Lernhilfe:</strong> Diese App dient ausschließlich als Lernunterstützung und ersetzt keine klinische Ausbildung oder ärztliche Diagnose. Inhalte ohne Gewähr.</span>
+  </div>
 </main>
 
 <footer>
@@ -3027,7 +3227,7 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
 <script id="data-gait" type="application/json">{
   "intro": [
     "Der Gangzyklus ist die zeitliche Abfolge eines Schritts vom Initial Contact (Heel Strike) eines Fußes bis zum nächsten Initial Contact desselben Fußes.",
-    "Er wird in **Standphase (Stance, ~60 %)** und **Schwungphase (Swing, ~40 %)** unterteilt.",
+    "Er wird in Standphase (Stance, ~60 %) und Schwungphase (Swing, ~40 %) unterteilt.",
     "Doppelte Standphase (beide Beine am Boden) ~10 % am Anfang und Ende der Standphase – nimmt mit Gehtempo ab und verschwindet beim Laufen."
   ],
   "stance_phases": [
@@ -3409,6 +3609,10 @@ function applyRoute() {
     if (v) v.classList.add("active"); else document.getElementById("view-home").classList.add("active");
     const navLink = document.querySelector('nav.topnav a[data-route="' + view + '"]');
     if (navLink) navLink.classList.add("active");
+    // Sync mobile bottom nav
+    document.querySelectorAll('.mobile-nav a').forEach(a => a.classList.remove('active'));
+    const mobileLink = document.querySelector('.mobile-nav a[data-route="' + view + '"]');
+    if (mobileLink) mobileLink.classList.add('active');
     // Lazy render for data-heavy views
     const renderers = { atem: renderAtem, ddx: initDDx };
     if (renderers[view]) renderers[view]();
@@ -3659,7 +3863,10 @@ function renderBiomech() {
 // === Gait rendering ===
 function renderGait() {
   document.getElementById("gait-intro").innerHTML = '<div class="section-block"><h3>Übersicht</h3>' +
-    GAIT.intro.map(p => '<p>' + p + '</p>').join("") + '</div>';
+    GAIT.intro.map(p => '<p>' + p
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/Doppelte Standphase|Standphase|Schwungphase/g, '<strong>$&</strong>')
+    + '</p>').join("") + '</div>';
 
   function phaseHtml(ph) {
     let html = '<div class="gait-phase"><div class="gp-head"><h3>' + escapeHtml(ph.phase) + '</h3>' +
@@ -4291,9 +4498,10 @@ function initDDx() {
     btn.onclick = () => { ddxActiveRegion=r; ddxActiveSymptom=null; renderDDxRegion(r); setDDxTab(r); };
     tabWrap.appendChild(btn);
   });
-  ddxActiveRegion = regions[0];
-  setDDxTab(regions[0]);
-  renderDDxRegion(regions[0]);
+  const startRegion = window.innerWidth <= 768 ? "Alle" : regions[0];
+  ddxActiveRegion = startRegion;
+  setDDxTab(startRegion);
+  renderDDxRegion(startRegion);
 }
 
 function renderDDxRegion(region) {
@@ -5489,11 +5697,40 @@ window.addEventListener('hashchange', () => {
   <a id="open-impressum">Impressum &amp; Datenschutz</a>
 </footer>
 
-  <!-- Sticky Disclaimer -->
-  <div class="sticky-disclaimer" id="sticky-disclaimer">
-    <span>⚠ <strong>Lernhilfe:</strong> Diese App dient ausschließlich als Lernunterstützung und ersetzt keine klinische Ausbildung oder ärztliche Diagnose. Inhalte ohne Gewähr.</span>
-    <button class="sd-close" onclick="document.body.classList.add('disclaimer-closed'); localStorage.setItem('pf-disclaimer-closed','1')" title="Schließen">✕</button>
-  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-nav" id="mobile-nav">
+    <a data-route="home" onclick="navigate('home')" title="Gelenke">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M12 7v4m0 0c-2 0-4 1-4 3s2 3 4 3 4-1 4-3-2-3-4-3zm0 6v4m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/></svg>
+      <span>Gelenke</span>
+    </a>
+    <a data-route="tests" onclick="navigate('tests')" title="Tests">
+      <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+      <span>Tests</span>
+    </a>
+    <a data-route="ddx" onclick="navigate('ddx')" title="DDx">
+      <svg viewBox="0 0 24 24"><path d="M12 3v4m0 0-3 5m3-5 3 5m-3 4v5M9 12H5m14 0h-4"/></svg>
+      <span>DDx</span>
+    </a>
+    <a data-route="clusters" onclick="navigate('clusters')" title="Cluster">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 7l3.5 3.5M17 7l-3.5 3.5M7 17l3.5-3.5M17 17l-3.5-3.5"/></svg>
+      <span>Cluster</span>
+    </a>
+    <a data-route="biomech" onclick="navigate('biomech')" title="Konzepte">
+      <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <span>Konzepte</span>
+    </a>
+    <a data-route="atem" onclick="navigate('atem')" title="Atem">
+      <svg viewBox="0 0 24 24"><path d="M12 4c-4 0-7 3-7 6 0 2 1 3.5 2.5 4.5M12 4c4 0 7 3 7 6 0 2-1 3.5-2.5 4.5M12 4v16"/><path d="M7.5 14.5C6 16 5 17.5 5 19h14c0-1.5-1-3-2.5-4.5"/></svg>
+      <span>Atem</span>
+    </a>
+    <a data-route="gait" onclick="navigate('gait')" title="Gangzyklus">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="1.5"/><path d="M10 8l-3 4 3 2-1 6m4-12 2 3-2 3 1.5 6M8 12h8"/></svg>
+      <span>Gangzyklus</span>
+    </a>
+
+  </nav>
+
 </body>
 </html>
 
