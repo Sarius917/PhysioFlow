@@ -1497,7 +1497,7 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
   <div class="nav-spacer"></div>
   <button class="search-trigger" id="search-trigger" title="Suchen (Strg+K)">Suchen <kbd>Ctrl+K</kbd></button>
   <div class="theme-picker" id="theme-picker">
-    <button class="theme-btn" id="theme-btn" onclick="pbToggleThemePicker(event)"><span id="theme-label">Hell</span></button>
+    <button class="theme-btn" id="theme-btn" onclick="pbToggleThemePicker()"><span id="theme-label">Hell</span></button>
     <div class="theme-dropdown" id="theme-dropdown">
       <div class="theme-opt" data-t="hell" onclick="pbSetTheme('hell')"><span class="theme-swatch" style="background:#F7F8FA;border-color:#2563EB"></span>Hell</div>
       <div class="theme-opt" data-t="warm" onclick="pbSetTheme('warm')"><span class="theme-swatch" style="background:#FAF7F2;border-color:#0D9488"></span>Warm</div>
@@ -4079,7 +4079,20 @@ function renderTestJointDropdown() {
 }
 function toggleTestJointDropdown() {
   const list = document.getElementById("tjoint-list");
-  if (list) list.style.display = list.style.display === "none" ? "block" : "none";
+  if (!list) return;
+  const isOpen = list.style.display === "block";
+  if (isOpen) { closeTestJointDropdown(); return; }
+  list.style.display = "block";
+  setTimeout(() => {
+    function outsideClick(ev) {
+      const wrap = document.getElementById("tjoint-dropdown");
+      if (!wrap || !wrap.contains(ev.target)) {
+        closeTestJointDropdown();
+        document.removeEventListener("click", outsideClick, true);
+      }
+    }
+    document.addEventListener("click", outsideClick, true);
+  }, 0);
 }
 function closeTestJointDropdown() {
   const list = document.getElementById("tjoint-list");
@@ -5489,7 +5502,19 @@ function renderKartenJointSelect() {
 function toggleJointDropdown() {
   const list = document.getElementById("kjoint-list");
   if (!list) return;
-  list.style.display = list.style.display === "none" ? "block" : "none";
+  const isOpen = list.style.display === "block";
+  if (isOpen) { closeJointDropdown(); return; }
+  list.style.display = "block";
+  setTimeout(() => {
+    function outsideClick(ev) {
+      const wrap = document.getElementById("kjoint-dropdown");
+      if (!wrap || !wrap.contains(ev.target)) {
+        closeJointDropdown();
+        document.removeEventListener("click", outsideClick, true);
+      }
+    }
+    document.addEventListener("click", outsideClick, true);
+  }, 0);
 }
 function closeJointDropdown() {
   const list = document.getElementById("kjoint-list");
@@ -5899,15 +5924,22 @@ function pbSetTheme(t) {
   document.getElementById('theme-picker').classList.remove('open');
 }
 
-function pbToggleThemePicker(e) {
-  e.stopPropagation();
-  document.getElementById('theme-picker').classList.toggle('open');
-}
-
-document.addEventListener('click', function(e) {
+function pbToggleThemePicker() {
   const picker = document.getElementById('theme-picker');
-  if (picker && !picker.contains(e.target)) picker.classList.remove('open');
-});
+  if (!picker) return;
+  const isOpen = picker.classList.contains('open');
+  if (isOpen) { picker.classList.remove('open'); return; }
+  picker.classList.add('open');
+  setTimeout(() => {
+    function outsideClick(ev) {
+      if (!picker.contains(ev.target)) {
+        picker.classList.remove('open');
+        document.removeEventListener('click', outsideClick, true);
+      }
+    }
+    document.addEventListener('click', outsideClick, true);
+  }, 0);
+}
 
 // Apply saved theme on load
 (function() {
