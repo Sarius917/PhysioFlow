@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>PhysioFlow · Bewegungsapparat interaktiv</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <style>
 :root {
   --bg: #F7F8FA; --bg-2: #FFFFFF; --card: #FFFFFF; --card-hover: #F1F5F9;
@@ -39,10 +39,11 @@ body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 .lmode-icon { font-size:28px; margin-bottom:8px; }
 .lmode-title { font-size:16px; font-weight:800; color:var(--text); margin-bottom:4px; }
 .lmode-desc { font-size:13px; color:var(--text-mute); line-height:1.5; }
-.learn-quiz { padding:24px 32px 60px; max-width:680px; margin:0 auto; }
-.quiz-progress-bar { height:6px; background:var(--border); border-radius:3px; margin-bottom:24px; }
+.learn-quiz { padding:24px 32px 60px; max-width:780px; margin:0 auto; }
+.quiz-progress-bar { display:none; }
 .quiz-prog-fill { height:100%; background:linear-gradient(90deg,#2563EB,#0EA5E9); border-radius:3px; transition:width .3s; width:0%; }
 .quiz-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px; box-shadow:var(--shadow-md); position:relative; }
+@media (min-width:769px) { .quiz-card { padding:40px 48px; } .quiz-question { font-size:22px; } .quiz-options { gap:14px; } }
 .quiz-type-badge { display:inline-block; padding:4px 12px; border-radius:12px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; background:rgba(37,99,235,.1); color:var(--accent); margin-bottom:16px; }
 .quiz-question { font-size:18px; font-weight:700; color:var(--text); line-height:1.5; margin-bottom:8px; }
 .quiz-context { font-size:13px; color:var(--text-mute); line-height:1.6; margin-bottom:20px; padding:12px 14px; background:var(--bg); border-radius:8px; display:none; }
@@ -62,6 +63,7 @@ body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 .qf-explain { font-size:13px; color:var(--text-soft); line-height:1.6; }
 .qf-next { margin-top:14px; background:var(--accent); color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; }
 .qf-next:hover { opacity:.9; }
+.quiz-title-heading { font-size:1.35rem; font-weight:800; color:var(--text); margin:0 0 20px; }
 .learn-exit-btn { display:block; margin:20px auto 0; background:none; border:1px solid var(--border); color:var(--text-mute); padding:8px 20px; border-radius:8px; cursor:pointer; font-size:13px; }
 .learn-exit-btn:hover { background:var(--card-hover); color:var(--text); }
 /* ── Red Flags ─────────────────────────────────────────── */
@@ -398,17 +400,38 @@ footer { padding: 24px 32px; text-align: center; color: var(--text-mute);
 .atem-punkt p { color:var(--text-soft); font-size:.88rem; line-height:1.65; margin:0; }
 
 /* ── KARTEIKARTEN ────────────────────────────────── */
-.karten-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+.karten-header { display:flex; align-items:center; gap:12px; margin-bottom:28px; flex-wrap:wrap; }
 .karten-back-btn { background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:7px 14px; color:var(--text); cursor:pointer; font-size:.88rem; }
-.karten-joint-select { display:flex; gap:6px; flex-wrap:wrap; }
-.kjoint-btn { background:var(--bg-2); border:1px solid var(--border); border-radius:20px; padding:5px 12px; font-size:.78rem; color:var(--text-soft); cursor:pointer; transition:.15s; }
+.karten-back-btn-bottom { display: none; }
+.kjoint-dropdown { position: relative; }
+.kjoint-toggle {
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: 20px;
+  padding: 6px 14px; font-size: .82rem; color: var(--text-soft); cursor: pointer;
+  white-space: nowrap; transition: .15s;
+}
+.kjoint-toggle:hover { background: var(--card-hover); color: var(--text); }
+.kjoint-list {
+  position: absolute; top: calc(100% + 6px); left: 0;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow-lg); z-index: 300; min-width: 200px;
+  overflow: hidden; padding: 6px;
+}
+.kjoint-list-item {
+  display: block; width: 100%; text-align: left;
+  background: none; border: none; padding: 9px 12px; border-radius: 8px;
+  font-size: .84rem; color: var(--text-soft); cursor: pointer; transition: .12s;
+}
+.kjoint-list-item:hover, .kjoint-list-item.active {
+  background: var(--card-hover); color: var(--text);
+}
+.kjoint-list-item.active { font-weight: 700; color: var(--accent); }
 .kjoint-btn.active, .kjoint-btn:hover { background:var(--accent); border-color:var(--accent); color:#fff; }
 .karten-progress { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
 .kp-count { font-size:.82rem; color:var(--text-soft); white-space:nowrap; }
 .kp-bar { flex:1; height:6px; background:var(--bg-2); border-radius:3px; overflow:hidden; }
 .kp-fill { height:100%; background:linear-gradient(90deg,var(--accent),#0EA5E9); border-radius:3px; transition:width .3s; }
 .karten-wrap { perspective:1200px; display:flex; justify-content:center; margin-bottom:20px; }
-.karte { width:100%; max-width:480px; height:260px; cursor:pointer; }
+.karte { width:100%; max-width:700px; height:360px; cursor:pointer; }
 .karte-inner { position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1); border-radius:18px; }
 .karte-inner.flipped { transform:rotateY(180deg); }
 .karte-front, .karte-back { position:absolute; inset:0; border-radius:18px; backface-visibility:hidden; -webkit-backface-visibility:hidden; padding:24px; display:flex; flex-direction:column; justify-content:center; }
@@ -1033,26 +1056,39 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
 @media (max-width: 768px) {
 
   /* ── Full-height flex layout so nav is always visible ── */
-  html { height: 100%; }
+  html, body {
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
   body {
     display: flex;
     flex-direction: column;
-    height: 100dvh;
-    height: 100vh; /* fallback */
-    overflow: hidden;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
   nav.topnav {
     flex-shrink: 0;
-    position: static !important; /* override sticky */
+    position: static !important;
+    width: 100%;
+    box-sizing: border-box;
   }
   main.app {
-    flex: 1;
+    flex: 1 1 0%;
     min-height: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    width: 100%;
+    box-sizing: border-box;
   }
   .mobile-nav {
     flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   /* ── Top nav: show only brand + theme ── */
@@ -1214,6 +1250,197 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
   footer { display: none; }
 
   nav.topnav a[data-route="learn"] { margin-left: 12px; }
+
+  /* ── Prevent horizontal scroll on all elements ── */
+  * { max-width: 100%; box-sizing: border-box; }
+  img, table, pre, code { max-width: 100%; }
+  table { display: block; overflow-x: auto; width: 100%; }
+
+  /* ── Test cards: stack vertically, no overflow ── */
+  .test-card {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-break: break-word;
+  }
+  .test-grid {
+    grid-template-columns: 1fr !important;
+    width: 100%;
+  }
+  .test-controls {
+    flex-direction: column;
+  }
+  .search-input { width: 100%; box-sizing: border-box; }
+  .test-sort { width: 100%; box-sizing: border-box; }
+
+  /* ── Joint cards ── */
+  .joint-card { width: 100%; box-sizing: border-box; }
+  .joint-cards { grid-template-columns: 1fr !important; }
+
+  /* ── DDx ── */
+  .ddx-symptom-grid { grid-template-columns: 1fr 1fr !important; }
+  .ddx-hyp-grid { grid-template-columns: 1fr !important; }
+
+  /* ── View: no horizontal overflow ── */
+  .view { width: 100%; overflow-x: hidden; padding: 16px 12px 24px; }
+
+  /* ── Concept cards ── */
+  .concept-card { width: 100%; }
+  .biomech-grid { grid-template-columns: 1fr !important; }
+
+  /* ── Karten Zurück button (mobile only, bottom) ── */
+  .karten-back-btn-bottom {
+    display: block;
+    margin: 14px auto 0;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-mute);
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .karten-header .karten-back-btn { display: none !important; }
+
+  /* ── Learn: more spacing + mobile-friendly joint select ── */
+  .learn-topbar {
+    padding: 12px 14px 8px;
+    gap: 10px;
+  }
+  .karten-header {
+    margin-bottom: 20px;
+    padding-top: 4px;
+  }
+
+  /* Stack learn-topbar items vertically if needed */
+  .learn-topbar { flex-direction: column; align-items: stretch; }
+  .learn-xp-wrap { min-width: unset; }
+  .learn-stats-sm { text-align: center; font-size: 12px; }
+
+  /* ── DDx Mobile Detail Overlay ── */
+  #ddx-mobile-detail {
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    background: var(--bg);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ddx-mob-header {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+  }
+  .ddx-mob-back {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 0;
+    flex-shrink: 0;
+  }
+  .ddx-mob-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  #ddx-mob-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  #ddx-mob-content .ddx-hyp-card {
+    width: 100%;
+  }
+
+  /* ── Konzepte (Biomech) – mobile readability ── */
+  .concept-card {
+    padding: 18px 16px;
+    margin-bottom: 14px;
+  }
+  .concept-card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .concept-summary {
+    font-size: 13.5px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .concept-card p {
+    font-size: 14.5px;
+    line-height: 1.8;
+    margin: 14px 0;
+  }
+  .concept-card p:first-of-type { margin-top: 0; }
+  .concept-card strong { font-weight: 700; }
+
+  /* ── Atem – mobile readability ── */
+  .atem-card {
+    padding: 18px 16px;
+    margin-bottom: 14px;
+  }
+  .atem-card-header {
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .atem-icon { font-size: 1.8rem; }
+  .atem-title { font-size: 1.1rem; }
+  .atem-subtitle { font-size: .82rem; }
+  .atem-section {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .atem-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .atem-section strong {
+    font-size: .78rem;
+    margin-bottom: 8px;
+  }
+  .atem-section p {
+    font-size: .95rem;
+    line-height: 1.75;
+  }
+  .atem-section ul {
+    font-size: .92rem;
+    line-height: 1.8;
+    padding-left: 16px;
+    margin: 6px 0 0;
+  }
+  .atem-section ul li { margin-bottom: 4px; }
+  .atem-muskel {
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .atem-muskel strong { font-size: .92rem; }
+  .atem-funk {
+    font-size: .86rem;
+    line-height: 1.6;
+    margin-top: 5px;
+  }
+  .atem-klinik { padding: 14px; }
+  .atem-punkt {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+  }
+  .atem-punkt strong { font-size: .95rem; margin-bottom: 6px; }
+  .atem-punkt p { font-size: .9rem; line-height: 1.75; }
 }
 </style>
 </head>
@@ -1271,7 +1498,7 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
     <div class="tabs2" id="joint-tabs">
       <div class="tab2 active" data-jt="overview">Anatomie</div>
       <div class="tab2" data-jt="muscles">Muskulatur</div>
-      <div class="tab2" data-jt="biomech">Konzepte</div>
+      <div class="tab2" data-jt="biomech">Biomechanik</div>
       <div class="tab2" data-jt="tests">Tests</div>
       <div class="tab2" data-jt="path">Krankheitsbilder</div>
       <div class="tab2" data-jt="redflag">Red Flags</div>
@@ -1367,11 +1594,6 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
           <div class="lmode-title">Karteikarten Anatomie</div>
           <div class="lmode-desc">Muskeln und Bänder pro Gelenk lernen – Flip-Karten mit Funktion und Innervation</div>
         </div>
-        <div class="lmode-card" onclick="startQuiz('all')">
-          <div class="lmode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></div>
-          <div class="lmode-title">Quiz: Alles gemischt</div>
-          <div class="lmode-desc">Multiple-Choice quer durch Tests, Anatomie, Konzepte und Fälle – adaptiv nach deinen Schwächen</div>
-        </div>
         <div class="lmode-card" onclick="startQuiz('tests')">
           <div class="lmode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="3"/><rect x="13" y="4" width="7" height="7" rx="1"/><polygon points="7,14 11,20 3,20"/><circle cx="17" cy="17" r="3"/></svg></div>
           <div class="lmode-title">Quiz: Klinische Tests</div>
@@ -1382,14 +1604,23 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
           <div class="lmode-title">Quiz: Klinische Fälle</div>
           <div class="lmode-desc">Multiple-Choice mit Patientenpräsentationen – welcher Test, welche Diagnose, welche Therapie?</div>
         </div>
+        <div class="lmode-card" onclick="startQuiz('all')">
+          <div class="lmode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></div>
+          <div class="lmode-title">Quiz: Alles gemischt</div>
+          <div class="lmode-desc">Multiple-Choice quer durch Tests, Anatomie, Konzepte und Fälle – adaptiv nach deinen Schwächen</div>
+        </div>
       </div>
       <div id="learn-progress-wrap" style="margin-top:24px"></div>
     </div>
 
-    <div id="learn-karten" style="display:none">
+    <div id="learn-karten" style="display:none; padding-top:28px">
+      <h2 class="quiz-title-heading">Karteikarten Anatomie</h2>
       <div class="karten-header">
         <button class="karten-back-btn" onclick="exitKarten()">← Zurück</button>
-        <div class="karten-joint-select" id="karten-joint-select"></div>
+        <div class="kjoint-dropdown" id="kjoint-dropdown">
+          <button class="kjoint-toggle" id="kjoint-toggle" onclick="toggleJointDropdown()">Gelenke ▾</button>
+          <div class="kjoint-list" id="kjoint-list" style="display:none"></div>
+        </div>
       </div>
       <div class="karten-progress" id="karten-progress"></div>
       <div class="karten-wrap" id="karten-wrap">
@@ -1433,9 +1664,11 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
         <button class="kbtn kbtn-wrong" onclick="karteAnswer(false)">Nochmal</button>
         <button class="kbtn kbtn-right" onclick="karteAnswer(true)">Gewusst!</button>
       </div>
+      <button class="karten-back-btn-bottom" id="karten-back-bottom" onclick="exitKarten()">← Zurück</button>
     </div>
     <div id="learn-quiz" class="learn-quiz" style="display:none">
       <div class="quiz-progress-bar"><div id="quiz-prog-fill" class="quiz-prog-fill"></div></div>
+      <h2 id="quiz-title" class="quiz-title-heading"></h2>
       <div class="quiz-card" id="quiz-card">
         <div class="quiz-type-badge" id="quiz-type-badge">Test</div>
         <div class="quiz-question" id="quiz-question"></div>
@@ -1463,6 +1696,14 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
       <div class="ddx-hyp-grid" id="ddx-hyp-grid"></div>
     </div>
   </section>
+  <!-- DDx Mobile Detail Overlay -->
+  <div id="ddx-mobile-detail" style="display:none">
+    <div class="ddx-mob-header">
+      <button class="ddx-mob-back" onclick="closeDDxMobileDetail()">← Zurück</button>
+      <span class="ddx-mob-title" id="ddx-mob-title"></span>
+    </div>
+    <div id="ddx-mob-content"></div>
+  </div>
 
 
 <div class="search-overlay hidden" id="search-overlay">
@@ -3651,7 +3892,7 @@ function renderJoint(j) {
   document.getElementById("jp-muscles").innerHTML = mu;
 
   // Biomechanik
-  let bm = '<div class="section-block"><h3>Konzepte dieses Gelenks</h3><div class="biomech-grid">';
+  let bm = '<div class="section-block"><h3>Biomechanik</h3><div class="biomech-grid">';
   bm += '<div class="biomech-row"><div class="lbl">Bewegungsumfang (ROM)</div><div class="val">' + escapeHtml(j.biomech.rom) + '</div></div>';
   bm += '<div class="biomech-row"><div class="lbl">Achsen / Funktion</div><div class="val">' + escapeHtml(j.biomech.achsen) + '</div></div>';
   bm += '<div class="biomech-row"><div class="lbl">Arthrokinematik</div><div class="val">' + escapeHtml(j.biomech.arthrokinematik) + '</div></div>';
@@ -4498,7 +4739,8 @@ function initDDx() {
     btn.onclick = () => { ddxActiveRegion=r; ddxActiveSymptom=null; renderDDxRegion(r); setDDxTab(r); };
     tabWrap.appendChild(btn);
   });
-  const startRegion = window.innerWidth <= 768 ? "Alle" : regions[0];
+  // Default to "Alle", or restore last selected region
+  const startRegion = ddxActiveRegion || "Alle";
   ddxActiveRegion = startRegion;
   setDDxTab(startRegion);
   renderDDxRegion(startRegion);
@@ -4524,14 +4766,8 @@ function renderDDxRegion(region) {
   }
 }
 
-function renderDDxHypothesen(path) {
-  const sec = document.getElementById("ddx-hyp-section");
-  const title = document.getElementById("ddx-hyp-title");
-  const grid = document.getElementById("ddx-hyp-grid");
-  if (!sec||!grid) return;
-  sec.style.display = "block";
-  title.textContent = path.region + " · " + path.symptom + " – Hypothesen";
-  grid.innerHTML = "";
+function buildDDxHypCards(path, container) {
+  container.innerHTML = "";
   const prioClass = { 1:"prio-1", 2:"prio-2", 3:"prio-3", 4:"prio-flag" };
   path.hypothesen.forEach(h => {
     const card = document.createElement("div");
@@ -4549,9 +4785,38 @@ function renderDDxHypothesen(path) {
     if (h.rule_out) html += '<div class="ddx-rule ddx-rule-out"> Rule-out: ' + escapeHtml(h.rule_out) + '</div>';
     html += '<div class="ddx-section-label">Therapierichtung</div><div class="ddx-therapie">' + escapeHtml(h.therapie) + '</div>';
     card.innerHTML = html;
-    grid.appendChild(card);
+    container.appendChild(card);
   });
+}
+
+function renderDDxHypothesen(path) {
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    const overlay = document.getElementById("ddx-mobile-detail");
+    const titleEl = document.getElementById("ddx-mob-title");
+    const content = document.getElementById("ddx-mob-content");
+    if (!overlay||!content) return;
+    titleEl.textContent = path.region + " · " + path.symptom;
+    buildDDxHypCards(path, content);
+    overlay.style.display = "block";
+    overlay.scrollTop = 0;
+    return;
+  }
+  const sec = document.getElementById("ddx-hyp-section");
+  const title = document.getElementById("ddx-hyp-title");
+  const grid = document.getElementById("ddx-hyp-grid");
+  if (!sec||!grid) return;
+  sec.style.display = "block";
+  title.textContent = path.region + " · " + path.symptom + " – Hypothesen";
+  buildDDxHypCards(path, grid);
   sec.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function closeDDxMobileDetail() {
+  const overlay = document.getElementById("ddx-mobile-detail");
+  if (overlay) overlay.style.display = "none";
+  ddxActiveSymptom = null;
+  document.querySelectorAll(".ddx-symptom-card").forEach(c => c.classList.remove("active"));
 }
 
 // ── RED FLAGS DATA ────────────────────────────────────────
@@ -5148,8 +5413,8 @@ function startKarten(jointId) {
   kartenIdx = 0; kartenFlipped = false;
   document.getElementById("learn-home").style.display="none";
   document.getElementById("learn-karten").style.display="block";
-  renderKartenJointSelect();
   showKarte();
+  renderKartenJointSelect();
 }
 
 function exitKarten() {
@@ -5158,15 +5423,34 @@ function exitKarten() {
 }
 
 function renderKartenJointSelect() {
-  const wrap = document.getElementById("karten-joint-select");
-  wrap.innerHTML = "";
+  const list = document.getElementById("kjoint-list");
+  const toggle = document.getElementById("kjoint-toggle");
+  if (!list) return;
+  list.innerHTML = "";
   Object.values(JOINTS).forEach(j => {
     const btn = document.createElement("button");
-    btn.className = "kjoint-btn" + (j.id === kartenJoint ? " active" : "");
-    btn.textContent = j.name.split(" ")[0];
-    btn.addEventListener("click", () => startKarten(j.id));
-    wrap.appendChild(btn);
+    btn.className = "kjoint-list-item" + (j.id === kartenJoint ? " active" : "");
+    btn.textContent = j.name.split(/[/(]/)[0].trim();
+    btn.addEventListener("click", () => {
+      closeJointDropdown();
+      startKarten(j.id);
+    });
+    list.appendChild(btn);
   });
+  // Update toggle label
+  if (toggle) {
+    const cur = kartenJoint ? JOINTS[kartenJoint] : null;
+    toggle.textContent = (cur ? cur.name.split(/[/(]/)[0].trim() : "Gelenke") + " ▾";
+  }
+}
+function toggleJointDropdown() {
+  const list = document.getElementById("kjoint-list");
+  if (!list) return;
+  list.style.display = list.style.display === "none" ? "block" : "none";
+}
+function closeJointDropdown() {
+  const list = document.getElementById("kjoint-list");
+  if (list) list.style.display = "none";
 }
 
 function showKarte() {
@@ -5289,6 +5573,9 @@ function startQuiz(mode) {
   quizMode = mode;
   allQuestions = buildAllQuestions(mode);
   sessionCount=0; sessionCorrect=0;
+  const titles = { tests: "Quiz: Klinische Tests", cases: "Quiz: Klinische Fälle", all: "Quiz: Alles gemischt" };
+  const titleEl = document.getElementById("quiz-title");
+  if (titleEl) titleEl.textContent = titles[mode] || "";
   document.getElementById("learn-home").style.display="none";
   document.getElementById("learn-quiz").style.display="block";
   nextQuestion();
