@@ -1257,18 +1257,51 @@ body.disclaimer-closed .sticky-disclaimer { display: none; }
   table { display: block; overflow-x: auto; width: 100%; }
 
   /* ── Test cards: stack vertically, no overflow ── */
-  .test-card {
-    width: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-    word-break: break-word;
-  }
   .test-grid {
     grid-template-columns: 1fr !important;
     width: 100%;
   }
+  .tcard {
+    width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+    padding: 14px 14px;
+  }
+  /* Stack joint-tag above title on mobile so joint is always visible */
+  .tcard-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .tcard-head .joint-tag {
+    order: -1;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 8px;
+    white-space: normal;
+  }
+  .tcard h3 {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  .tcard .row {
+    font-size: 13px;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+  .tcard .row .lbl {
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+  .metrics {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .metric { min-width: 70px; }
   .test-controls {
     flex-direction: column;
+    gap: 8px;
   }
   .search-input { width: 100%; box-sizing: border-box; }
   .test-sort { width: 100%; box-sizing: border-box; }
